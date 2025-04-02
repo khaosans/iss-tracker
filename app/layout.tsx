@@ -1,11 +1,15 @@
 import type React from "react"
+import type { Metadata } from "next"
+import { Inter } from 'next/font/google'
 import "@/app/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import ChatBot from '@/components/ChatBot'
 
-export const metadata = {
-  title: "ISS 3D Globe Tracker with Crew AI",
-  description: "Track the International Space Station in real-time with AI-powered insights",
-    generator: 'v0.dev'
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'ISS Tracker',
+  description: 'Track the International Space Station in real time',
 }
 
 export default function RootLayout({
@@ -14,16 +18,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
+          <ChatBot />
         </ThemeProvider>
       </body>
     </html>
   )
 }
-
-
-
-import './globals.css'
