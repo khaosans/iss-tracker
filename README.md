@@ -1,17 +1,11 @@
 # ISS Tracker 🛰️
 
 <div align="center">
-  <img src="iss.png" alt="ISS Tracker visualization" width="80%" />
+  <img src="iss2.png" alt="ISS Tracker visualization" width="80%" />
   
   <p><em>Real-time 3D visualization tracking the International Space Station with geographic facts</em></p>
 </div>
 
-<div align="center">
-  <a href="https://iss-tracker-demo.vercel.app"><strong>Live Demo »</strong></a> &nbsp;|&nbsp;
-  <a href="#installation">Installation</a> &nbsp;|&nbsp;
-  <a href="#usage">Usage</a> &nbsp;|&nbsp;
-  <a href="#architecture">Architecture</a>
-</div>
 
 <hr />
 
