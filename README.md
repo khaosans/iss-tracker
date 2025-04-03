@@ -1,8 +1,4 @@
-Let's update the entire README file to ensure the image path is correct. Based on the information, it seems the image file might be missing or in a different location. 
 
-To proceed, I'll update the image path to check if the image is in an `images` directory. Here is the updated content of the README file:
-
-```markdown
 # ISS Tracker 🛰️
 
 [![ISS Tracker CI](https://github.com/yourusername/iss-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/iss-tracker/actions/workflows/ci.yml)
@@ -295,6 +291,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [react-globe.gl](https://github.com/vasturiano/react-globe.gl) for the 3D globe visualization
 - [Three.js](https://threejs.org/) for 3D rendering capabilities
 - [Next.js](https://nextjs.org/) for the React framework
-```
 
-You can update the README file in your repository with the above content. This change assumes the image is located in an `images` directory. If the image is elsewhere, adjust the path accordingly. If you need further assistance, please let me know!
+
