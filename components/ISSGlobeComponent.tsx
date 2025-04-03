@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import Globe from 'react-globe.gl'
 import LocationFactDisplay from './LocationFact'
-import { motion, AnimatePresence } from 'framer-motion'
+// Removed unused imports
 
 import useFactProvider from './FactProvider'
 import useTextureLoader from '@/hooks/useTextureLoader' // Changed to default import
@@ -21,16 +21,16 @@ const ISSGlobeComponent = ({
 }: GlobeProps) => {
   const globeRef = useRef<any>(null)
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight })
-  const { position: issPosition, trail: issTrail, pathPoints, isLoading } = useISSPosition()
+  const { position: issPosition, pathPoints, isLoading } = useISSPosition() // Removed 'issTrail'
   const [prevPosition, setPrevPosition] = useState<ISSPosition | null>(null)
   const [showFact, setShowFact] = useState(false)
-  const [formattedFact, setFormattedFact] = useState<string | null>(null)
+  // Removed unused 'formattedFact' and 'setFormattedFact'
   const [factUpdateCounter, setFactUpdateCounter] = useState(0)
-  const [isGeneratingFact, setIsGeneratingFact] = useState(false)
+  // Removed unused 'isGeneratingFact' and 'setIsGeneratingFact'
   const [factTypingComplete, setFactTypingComplete] = useState(true);
   const factTimerRef = useRef<NodeJS.Timeout | null>(null)
   const { currentFact, updateFact } = useFactProvider()
-  const { texture, error: textureError } = useTextureLoader(globeImageUrl); // Call the hook unconditionally
+  const { error: textureError } = useTextureLoader(globeImageUrl); // Removed unused 'texture'
   const [textureLoadFailed, setTextureLoadFailed] = useState(false)
 
   useEffect(() => {
@@ -42,12 +42,7 @@ const ISSGlobeComponent = ({
   }, [])
 
   // Function to check if ISS has moved to a new region
-  const hasMovedToNewRegion = useCallback((current: ISSPosition | null, previous: ISSPosition | null) => {
-    if (!current || !previous) return false
-    const latDiff = Math.abs(current.latitude - previous.latitude)
-    const lngDiff = Math.abs(current.longitude - previous.longitude)
-    return latDiff > 5 || lngDiff > 5
-  }, [])
+  // Removed unused 'hasMovedToNewRegion'
 
   // Fact timer effect: update fact counter every 10 minutes
   useEffect(() => {
@@ -137,9 +132,6 @@ const ISSGlobeComponent = ({
       setTextureLoadFailed(false)
     }
   }, [textureError])
-
-  if (isLoading) return <div className="text-center py-10">Loading ISS tracker...</div>
-
   return (
     <div className="w-full h-full relative flex items-center justify-center">
       <Globe
@@ -153,18 +145,15 @@ const ISSGlobeComponent = ({
         atmosphereAltitude={0.15}
         width={dimensions.width}
         height={dimensions.height}
-        centerHoverAltitude={0.1}
         animateIn={true}
         pointsData={issPosition ? [issPosition] : []}
         pointLat="latitude"
         pointLng="longitude"
-        pointAltitude="altitude"
         pointRadius={1.2}
         pointColor={() => '#ff4444'}
         pointsMerge={false}
         pointsTransitionDuration={1000}
         showGraticules={true}
-        graticulesColor="rgba(255,255,255,0.1)"
         pathsData={[{
           coords: pathPoints,
           color: [255, 255, 0],
@@ -174,7 +163,7 @@ const ISSGlobeComponent = ({
         pathPoints="coords"
         pathPointLat={1}
         pathPointLng={0}
-        pathColor={(d) => Array.isArray(d.color) ? `rgb(${d.color.join(',')})` : d.color}
+        pathColor={(d: any) => Array.isArray(d.color) ? `rgb(${d.color.join(',')})` : d.color}
         pathStroke="width"
         pathDashLength={0.1}
         pathDashGap={0}
@@ -186,7 +175,7 @@ const ISSGlobeComponent = ({
         isVisible={showFact}
         style={{ display: showFact ? 'block' : 'none' }}
         onTypingComplete={() => setFactTypingComplete(true)}
-        minDisplayTime={10000} // Ensure fact stays visible for at least 10 seconds
+        minDisplayTime={10000}
       />
       {textureLoadFailed && (
         <div className="absolute top-4 left-4 bg-red-500/90 text-white p-4 rounded-lg shadow-lg">

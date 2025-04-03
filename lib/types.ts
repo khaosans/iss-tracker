@@ -1,7 +1,7 @@
 export interface ISSPosition {
-  latitude: number
-  longitude: number
-  altitude: number
+  latitude: number;
+  longitude: number;
+  altitude: number;
 }
 
 export interface Fact {
@@ -10,8 +10,11 @@ export interface Fact {
   source: string
 }
 
+
 export interface LocationFact {
+  id: string;
   fact: string;
+  location: string; // Ensure location is included
   region?: string;
   source?: string;
 }
@@ -22,4 +25,8 @@ export type ChatMessage = {
   sender: 'user' | 'bot';
   timestamp: Date;
 };
+
+
+
+
 
