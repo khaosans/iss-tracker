@@ -2,9 +2,6 @@
   "name": "iss-tracker",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "."
-  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
