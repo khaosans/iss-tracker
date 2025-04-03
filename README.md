@@ -1,7 +1,7 @@
 # ISS Tracker 🛰️
 
 <div align="center">
-  <img src="iss.png" alt="ISS Tracker visualization" width="80%" />
+  <img src="https://github.com/khaosans/iss-tracker/blob/feature/earth/public/iss.png" alt="ISS Tracker visualization" width="80%" />
   
   <p><em>Real-time 3D visualization tracking the International Space Station with geographic facts</em></p>
 </div>
