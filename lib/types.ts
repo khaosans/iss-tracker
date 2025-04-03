@@ -16,3 +16,10 @@ export interface LocationFact {
   source?: string;
 }
 
+export type ChatMessage = {
+  id: string;
+  content: string;
+  sender: 'user' | 'bot';
+  timestamp: Date;
+};
+
