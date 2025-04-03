@@ -25,13 +25,16 @@ const useFactProvider = () => {
   const [isGeneratingFact, setIsGeneratingFact] = useState(false)
   const factTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)  // Use ReturnType for better type safety
   const [factUpdateCounter, setFactUpdateCounter] = useState(0)
+  const lastApiCallTimeRef = useRef<number>(0) // Track last API call time
 
-  // Fact timer effect: update fact counter every 10 seconds
+  const API_CALL_COOLDOWN = 300000; // 5 minutes in milliseconds
+
+  // Fact timer effect: update fact counter every 5 minutes
   useEffect(() => {
     if (factTimerRef.current) clearTimeout(factTimerRef.current)
     factTimerRef.current = setTimeout(() => {
       setFactUpdateCounter(prev => prev + 1)
-    }, 10000)
+    }, 300000) // Changed from 10000/600000 to 300000 (5 minutes)
     return () => {
       if (factTimerRef.current) clearTimeout(factTimerRef.current)
     }
@@ -46,9 +49,21 @@ const useFactProvider = () => {
 
   const updateFact = useCallback(async (newPosition: ISSPosition, prevPosition: ISSPosition | null) => {
     const movedToNewRegion = hasMovedToNewRegion(newPosition, prevPosition)
-    if ((movedToNewRegion || factUpdateCounter > 0 || !currentFact) && !isGeneratingFact) {
+    const currentTime = Date.now()
+    const timeSinceLastCall = currentTime - lastApiCallTimeRef.current
+    
+    // Check if we should update fact: new region OR timer expired OR no current fact, AND not currently generating
+    // PLUS ensure we're not calling the API too frequently
+    if ((movedToNewRegion || factUpdateCounter > 0 || !currentFact) && 
+        !isGeneratingFact && 
+        timeSinceLastCall >= API_CALL_COOLDOWN) {
+      
       setIsGeneratingFact(true)
+      
       try {
+        // Update timestamp before API call
+        lastApiCallTimeRef.current = currentTime
+        
         const llmFact = await generateLocationFact(newPosition.latitude, newPosition.longitude)
         if (llmFact && typeof llmFact.fact === 'string') {
           const validatedFact = {
