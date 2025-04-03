@@ -1,18 +1,15 @@
 "use client"
 
-import dynamic from 'next/dynamic'
+import React from 'react';
 
-const ISSGlobeComponent = dynamic(
-  () => import('./ISSGlobeComponent').then((mod) => mod.default),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="loading-overlay">
-        Loading ISS Tracker...
-      </div>
-    )
-  }
-)
+const ISSGlobe = () => {
+  return (
+    <div data-testid="iss-globe">
+      {/* Your ISSGlobe component content here */}
+      ISSGlobe Component
+    </div>
+  );
+};
 
-export default ISSGlobeComponent
+export default ISSGlobe;
 

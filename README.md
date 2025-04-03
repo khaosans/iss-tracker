@@ -1,5 +1,7 @@
 # ISS Tracker 🛰️
 
+[![ISS Tracker CI](https://github.com/yourusername/iss-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/iss-tracker/actions/workflows/ci.yml)
+
 <div align="center">
   <img src="iss2.png" alt="ISS Tracker visualization" width="80%" />
   
@@ -240,6 +242,17 @@ The application uses the Where The ISS At API to fetch real-time ISS position da
 Location-based facts are generated using:
 1. Custom LLM integration for dynamic fact generation
 2. Fallback to a local database of geographic facts
+
+## 🧪 Testing
+
+This project uses Vitest with Turbo for fast and efficient testing.
+
+To run tests:
+```bash
+npm run test
+# or
+pnpm test
+```
 
 ## 🤝 Contributing
 

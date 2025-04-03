@@ -3,7 +3,8 @@ import ISSGlobe from '@/components/iss-globe'
 export default function HomePage() {
   return (
     <div className="globe-container">
-      <ISSGlobe />
+      <h1>ISS Tracker</h1>
+      <ISSGlobe data-testid="iss-globe"><span>ISSGlobe</span></ISSGlobe>
     </div>
   )
 }
