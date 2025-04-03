@@ -1,6 +1,8 @@
 # ISS Tracker 🛰️
 
-Real-time 3D visualization tracking the International Space Station (ISS) orbit with geographic facts about regions it passes over.
+![OSS Banner](#oss.png)
+
+Real-time 3D visualization tracking the International Space Station orbit with geographic facts about regions it passes over.
 
 ## ✨ Features
 
