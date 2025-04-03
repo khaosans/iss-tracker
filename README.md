@@ -1,15 +1,14 @@
-# ISS 3D Globe Tracker 🌍
+# ISS Tracker
 
-Real-time 3D visualization of the International Space Station's position using Next.js and Three.js
-
-![Screenshot](public/screenshot.jpg) <!-- Add actual screenshot later -->
+A real-time International Space Station tracker that displays the current position of the ISS on a 3D globe and shows interesting facts about the locations it passes over.
 
 ## Features
-- Real-time ISS position tracking
-- Interactive 3D globe visualization
-- Responsive design with dark/light mode
-- API integration with Open Notify
-- Built with modern React and TypeScript
+
+- Real-time tracking of the ISS using the wheretheiss.at API
+- 3D globe visualization using react-globe.gl
+- Dynamic fact generation using OpenAI's GPT model
+- Fallback to predefined facts when API is unavailable
+- Smooth animations and transitions
 
 ## Getting Started
 

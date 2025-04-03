@@ -1,80 +1,92 @@
-import { type NextRequest, NextResponse } from "next/server"
-import type { ISSPosition } from "@/lib/types"
+import { NextRequest, NextResponse } from 'next/server';
+import { ChatMessage } from '@/lib/types';
+import axios from 'axios';
 
+// Cache for storing generated facts to avoid excessive API calls
+const factCache = new Map<string, { fact: string; timestamp: number }>();
+const CACHE_EXPIRY = 1000 * 60 * 60; // 1 hour cache expiry
+
+/**
+ * API route for generating location facts using OpenAI
+ */
 export async function POST(req: NextRequest) {
   try {
-    const { message, issPosition } = await req.json()
-
-    if (!message) {
-      return NextResponse.json({ error: "Message is required" }, { status: 400 })
+    const { latitude, longitude, region } = await req.json();
+    
+    // Create a cache key based on coordinates (rounded to 1 decimal place for better caching)
+    const cacheKey = `${Math.round(latitude * 10) / 10},${Math.round(longitude * 10) / 10}`;
+    
+    // Check if we have a cached fact that's still valid
+    const cachedFact = factCache.get(cacheKey);
+    if (cachedFact && (Date.now() - cachedFact.timestamp) < CACHE_EXPIRY) {
+      return NextResponse.json({ fact: cachedFact.fact, source: 'AI Generated', cached: true });
     }
-
-    // Format the system prompt with ISS position data
-    const systemPrompt = formatSystemPrompt(issPosition)
-
-    // Call Ollama API
-    const response = await callOllamaAPI(systemPrompt, message)
-
-    return NextResponse.json({ response })
-  } catch (error) {
-    console.error("Error in chat API:", error)
-    return NextResponse.json({ error: "Failed to process request" }, { status: 500 })
-  }
-}
-
-function formatSystemPrompt(issPosition: ISSPosition | null): string {
-  let prompt = `You are an AI assistant specializing in information about the International Space Station (ISS).`
-
-  if (issPosition) {
-    const { latitude, longitude, timestamp } = issPosition
-    const formattedTime = timestamp.toISOString()
-
-    prompt += `\n\nCurrent ISS Position Data:
-- Latitude: ${latitude.toFixed(4)}
-- Longitude: ${longitude.toFixed(4)}
-- Timestamp: ${formattedTime}
-
-When answering questions about the ISS's current location, use this data.`
-  }
-
-  prompt += `\n\nProvide informative, accurate, and engaging responses about the ISS, space exploration, and orbital mechanics. If asked about the current position, explain what part of Earth the ISS is currently flying over based on the coordinates.`
-
-  return prompt
-}
-
-async function callOllamaAPI(systemPrompt: string, userMessage: string): Promise<string> {
-  try {
-    // Call to local Ollama instance
-    const response = await fetch("http://localhost:11434/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    
+    // If no API key is configured, return a fallback response
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json({
+        fact: `You are currently over ${region || 'this region'}. This is a placeholder fact because no LLM API key is configured.`,
+        source: 'System Fallback',
+        error: 'No API key configured'
+      });
+    }
+    
+    // Prepare the prompt for the LLM
+    const messages: ChatMessage[] = [
+      {
+        role: 'system',
+        content: 'You are a helpful assistant that provides interesting, educational facts about geographical locations. Keep your responses concise (under 100 words), factual, and engaging.'
       },
-      body: JSON.stringify({
-        model: "llama3", // or whichever model you have installed
-        messages: [
-          {
-            role: "system",
-            content: systemPrompt,
-          },
-          {
-            role: "user",
-            content: userMessage,
-          },
-        ],
-        stream: false,
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error(`Ollama API error: ${response.statusText}`)
+      {
+        role: 'user',
+        content: `Generate an interesting fact about the region near latitude ${latitude}, longitude ${longitude}${region ? ` (${region})` : ''}. The fact should be educational and suitable for all ages.`
+      }
+    ];
+    
+    // Call OpenAI API
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages,
+        max_tokens: 150,
+        temperature: 0.7,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        }
+      }
+    );
+    
+    const generatedFact = response.data.choices[0].message.content.trim();
+    
+    // Cache the result
+    factCache.set(cacheKey, {
+      fact: generatedFact,
+      timestamp: Date.now()
+    });
+    
+    // Limit cache size to prevent memory issues
+    if (factCache.size > 100) {
+      // Delete the oldest entry
+      const oldestKey = [...factCache.entries()]
+        .sort((a, b) => a[1].timestamp - b[1].timestamp)[0][0];
+      factCache.delete(oldestKey);
     }
-
-    const data = await response.json()
-    return data.message.content
+    
+    return NextResponse.json({
+      fact: generatedFact,
+      source: 'AI Generated',
+      cached: false
+    });
+    
   } catch (error) {
-    console.error("Error calling Ollama API:", error)
-    return "I'm having trouble connecting to my knowledge base. Please check if Ollama is running locally with the correct model loaded."
+    console.error('Error generating fact:', error);
+    return NextResponse.json(
+      { error: 'Failed to generate fact' },
+      { status: 500 }
+    );
   }
 }
-

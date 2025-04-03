@@ -4,13 +4,25 @@ import { useEffect, useState } from 'react'
 import * as THREE from 'three'
 import { LineBasicMaterial, BufferGeometry, Vector3, Line } from 'three';
 
-const TEXTURE_PATHS = {
-  earth: '/earth-texture.jpg',  // Public directory path
+interface TexturePaths {
+  globeImageUrl?: string
+  bumpImageUrl?: string
+  cloudsImageUrl?: string
+}
+
+const DEFAULT_TEXTURE_PATHS = {
+  earth: '/earth-texture.jpg',
   bump: '/earth-bump.jpg',
   clouds: '/earth-clouds.png'
 }
 
-export function useTextureLoader() {
+const getTexturePaths = (props: TexturePaths) => ({
+  earth: props.globeImageUrl || DEFAULT_TEXTURE_PATHS.earth,
+  bump: props.bumpImageUrl || DEFAULT_TEXTURE_PATHS.bump,
+  clouds: props.cloudsImageUrl || DEFAULT_TEXTURE_PATHS.clouds
+})
+
+export function useTextureLoader(props: TexturePaths = {}) {
   const [state, setState] = useState<{
     textures: Record<string, THREE.Texture>
     error: Error | null
@@ -34,7 +46,7 @@ export function useTextureLoader() {
     let cancelled = false
 
     Promise.all(
-      Object.entries(TEXTURE_PATHS).map(async ([key, path]) => {
+      Object.entries(getTexturePaths(props)).map(async ([key, path]) => {
         try {
           textures[key] = await new Promise((resolve, reject) => {
             loader.load(path, resolve, undefined, reject)

@@ -1,11 +1,18 @@
 export interface ISSPosition {
   latitude: number
   longitude: number
-  timestamp: Date
+  altitude: number
 }
 
-export interface ChatMessage {
-  role: "user" | "assistant" | "system"
-  content: string
+export interface Fact {
+  fact: string
+  region: string
+  source: string
+}
+
+export interface LocationFact {
+  fact: string;
+  region?: string;
+  source?: string;
 }
 
