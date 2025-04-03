@@ -1,12 +1,16 @@
 "use client"
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 
-const ISSGlobe = () => {
+interface ISSGlobeProps {
+  children?: ReactNode;
+}
+
+const ISSGlobe: React.FC<ISSGlobeProps> = ({ children }) => {
   return (
     <div data-testid="iss-globe">
       {/* Your ISSGlobe component content here */}
-      ISSGlobe Component
+      {children || 'ISSGlobe Component'}
     </div>
   );
 };

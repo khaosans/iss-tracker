@@ -29,7 +29,7 @@ function useTextureLoader(url: string | null) {
         undefined, // onProgress callback
         (err) => {
           console.error('An error happened during texture loading:', err);
-          setError(err);
+          setError(err as Error);
           setTexture(null);
         }
       );
